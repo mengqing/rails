@@ -568,7 +568,20 @@ module ApplicationTests
       assert_not_equal default_verifier.object_id, text_verifier.object_id
     end
 
+    test "credentials.secret_key_base is used when is present" do
+      add_to_config <<-RUBY
+        Rails.application.credentials.secret_key_base = "3b7cd727ee24e8444053437c36cc66c3"
+      RUBY
+
+      app "development"
+      assert_equal "3b7cd727ee24e8444053437c36cc66c3", app.secret_key_base
+    end
+
     test "secrets.secret_key_base is used when config/secrets.yml is present" do
+      add_to_config <<-RUBY
+        Rails.application.credentials.secret_key_base = nil
+      RUBY
+
       app_file "config/secrets.yml", <<-YAML
         development:
           secret_key_base: 3b7cd727ee24e8444053437c36cc66c3
